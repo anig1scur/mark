@@ -19,6 +19,7 @@ import (
 )
 
 type Flags struct {
+<<<<<<< HEAD
 	FileGlobPatten string `docopt:"-f"`
 	CompileOnly    bool   `docopt:"--compile-only"`
 	DryRun         bool   `docopt:"--dry-run"`
@@ -36,6 +37,24 @@ type Flags struct {
 	Config         string `docopt:"--config"`
 	Ci             bool   `docopt:"--ci"`
 	Space          string `docopt:"--space"`
+=======
+	FileGlobPatten   string `docopt:"-f"`
+	CompileOnly      bool   `docopt:"--compile-only"`
+	DryRun           bool   `docopt:"--dry-run"`
+	EditLock         bool   `docopt:"-k"`
+	DropH1           bool   `docopt:"--drop-h1"`
+	MinorEdit        bool   `docopt:"--minor-edit"`
+	Color            string `docopt:"--color"`
+	Debug            bool   `docopt:"--debug"`
+	Trace            bool   `docopt:"--trace"`
+	Username         string `docopt:"-u"`
+	Password         string `docopt:"-p"`
+	TargetURL        string `docopt:"-l"`
+	BaseURL          string `docopt:"--base-url"`
+	Config           string `docopt:"--config"`
+	Ci               bool   `docopt:"--ci"`
+	PreserveComments bool   `docopt:"--preserve-comments"`
+>>>>>>> c4d83e2 (add support)
 }
 
 const (
@@ -80,6 +99,7 @@ Options:
   -c --config <path>   Use the specified configuration file.
                         [default: $HOME/.config/mark]
   --ci                 Runs on CI mode. It won't fail if files are not found.
+  --preserve-comments  Try to preserve the comment from the Confluence page.
   -h --help            Show this message.
   -v --version         Show version.
 `
@@ -278,6 +298,7 @@ func processFile(
 		)
 	}
 
+	var pageCreated bool
 	var target *confluence.PageInfo
 
 	if meta != nil {
@@ -306,6 +327,7 @@ func processFile(
 					meta.Title,
 				)
 			}
+			pageCreated = true
 		}
 
 		target = page
@@ -364,6 +386,28 @@ func processFile(
 		}
 
 		html = buffer.String()
+	}
+
+	if flags.PreserveComments && !pageCreated {
+		comments, err := api.GetInlineComments(target.ID)
+		if err != nil {
+			log.Warningf(
+				err,
+				"can't fetch comments %s %q",
+				meta.Type,
+				meta.Title,
+			)
+		}
+
+		html, err = mark.MergeComments(html, comments)
+		if err != nil {
+			log.Warningf(
+				err,
+				"can't merge comments %s %q",
+				meta.Type,
+				meta.Title,
+			)
+		}
 	}
 
 	err = api.UpdatePage(target, html, flags.MinorEdit, meta.Labels)
