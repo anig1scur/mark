@@ -19,25 +19,24 @@ import (
 )
 
 type Flags struct {
-	FileGlobPatten string `docopt:"-f"`
-	CompileOnly    bool   `docopt:"--compile-only"`
-	DryRun         bool   `docopt:"--dry-run"`
-	EditLock       bool   `docopt:"-k"`
-	DropH1         bool   `docopt:"--drop-h1"`
-	TitleFromH1    bool   `docopt:"--title-from-h1"`
-	MinorEdit      bool   `docopt:"--minor-edit"`
-	Color          string `docopt:"--color"`
-	Debug          bool   `docopt:"--debug"`
-	Trace          bool   `docopt:"--trace"`
-	Username       string `docopt:"-u"`
-	Password       string `docopt:"-p"`
-	TargetURL      string `docopt:"-l"`
-	BaseURL        string `docopt:"--base-url"`
-	Config         string `docopt:"--config"`
-	Ci             bool   `docopt:"--ci"`
-	Space          string `docopt:"--space"`
+	FileGlobPatten   string `docopt:"-f"`
+	CompileOnly      bool   `docopt:"--compile-only"`
+	DryRun           bool   `docopt:"--dry-run"`
+	EditLock         bool   `docopt:"-k"`
+	DropH1           bool   `docopt:"--drop-h1"`
+	TitleFromH1      bool   `docopt:"--title-from-h1"`
+	MinorEdit        bool   `docopt:"--minor-edit"`
+	Color            string `docopt:"--color"`
+	Debug            bool   `docopt:"--debug"`
+	Trace            bool   `docopt:"--trace"`
+	Username         string `docopt:"-u"`
+	Password         string `docopt:"-p"`
+	TargetURL        string `docopt:"-l"`
+	BaseURL          string `docopt:"--base-url"`
+	Config           string `docopt:"--config"`
+	Ci               bool   `docopt:"--ci"`
+	Space            string `docopt:"--space"`
 	PreserveComments bool   `docopt:"--preserve-comments"`
-
 }
 
 const (
@@ -183,13 +182,9 @@ func processFile(
 
 	switch {
 	case meta.Space == "" && flags.Space == "":
-<<<<<<< HEAD
 		log.Fatal(
 			"space is not set ('Space' header is not set and '--space' option is not set)",
 		)
-=======
-		log.Fatal("space is not set ('Space' header is not set and '--space' option is not set)")
->>>>>>> 03afbd1 (Space from config and title from h1 (#153))
 	case meta.Space == "" && flags.Space != "":
 		meta.Space = flags.Space
 	}

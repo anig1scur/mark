@@ -189,6 +189,22 @@ func MergeComments(body string, comments *confluence.InlineComments) (string, er
 	return body, nil
 }
 
+func prepareAttachments(base string, replacements []string) ([]Attachment, error) {
+	attaches := []Attachment{}
+	for _, name := range replacements {
+		attach := Attachment{
+			Name:     name,
+			Filename: strings.ReplaceAll(name, "/", "_"),
+			Path:     filepath.Join(base, name),
+			Replace:  name,
+		}
+
+		attaches = append(attaches, attach)
+	}
+
+	return attaches, nil
+}
+
 func CompileAttachmentLinks(markdown []byte, attaches []Attachment) []byte {
 	links := map[string]string{}
 	replaces := []string{}
