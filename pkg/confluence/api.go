@@ -62,6 +62,15 @@ type PageInfo struct {
 	} `json:"_links"`
 }
 
+type PageViewInfo struct {
+	ID   string `json:"id"`
+	Body struct {
+		View struct {
+			Value string `json:"value"`
+		}
+	}
+}
+
 type InlineComments struct {
 	Results []struct {
 		Extensions struct {
@@ -536,6 +545,27 @@ func (api *API) CreatePage(
 	}
 
 	return request.Response.(*PageInfo), nil
+}
+
+func (api *API) PullPage(pageID string) (*PageViewInfo, error) {
+	payload := map[string]string{
+		"expand": "body.view",
+	}
+
+	result := PageViewInfo{}
+
+	request, err := api.rest.Res(
+		"content/"+pageID, &result,
+	).Get(payload)
+	if err != nil {
+		return nil, err
+	}
+
+	if request.Raw.StatusCode != 200 {
+		return nil, newErrorStatusNotOK(request)
+	}
+
+	return &result, nil
 }
 
 func (api *API) UpdatePage(

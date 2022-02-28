@@ -157,22 +157,6 @@ func ResolveAttachments(
 	return attaches, nil
 }
 
-func prepareAttachments(base string, replacements []string) ([]Attachment, error) {
-	attaches := []Attachment{}
-	for _, name := range replacements {
-		attach := Attachment{
-			Name:     name,
-			Filename: strings.ReplaceAll(name, "/", "_"),
-			Path:     filepath.Join(base, name),
-			Replace:  name,
-		}
-
-		attaches = append(attaches, attach)
-	}
-
-	return attaches, nil
-}
-
 // The logic of merging comment is the following. Since each comment comes with
 // its original selection text, we just search for that and put back the marker.
 // Note that this only finds the first instance, so if you put a comment on a

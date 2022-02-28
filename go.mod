@@ -17,6 +17,9 @@ require (
 
 require (
 	github.com/BurntSushi/toml v0.3.1 // indirect
+	github.com/JohannesKaufmann/html-to-markdown v1.3.3 // indirect
+	github.com/PuerkitoBio/goquery v1.5.1 // indirect
+	github.com/andybalholm/cascadia v1.1.0 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/go-yaml/yaml v2.1.0+incompatible // indirect
 	github.com/iancoleman/strcase v0.0.0-20191112232945-16388991a334 // indirect
@@ -28,6 +31,7 @@ require (
 	github.com/reconquest/loreley v0.0.0-20200601121626-621c1cd37fd1 // indirect
 	github.com/zazab/zhash v0.0.0-20170403032415-ad45b89afe7a // indirect
 	golang.org/x/crypto v0.0.0-20201216223049-8b5274cf687f // indirect
+	golang.org/x/net v0.0.0-20200320220750-118fecf932d8 // indirect
 	golang.org/x/sys v0.0.0-20200116001909-b77594299b42 // indirect
 	golang.org/x/term v0.0.0-20201117132131-f5c789dd3221 // indirect
 	gopkg.in/check.v1 v1.0.0-20190902080502-41f04d3bba15 // indirect

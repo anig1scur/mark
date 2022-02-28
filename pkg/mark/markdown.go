@@ -1,10 +1,13 @@
 package mark
 
 import (
+	"fmt"
 	"io"
+	"os"
 	"regexp"
 	"strings"
 
+	md "github.com/JohannesKaufmann/html-to-markdown"
 	bf "github.com/kovetskiy/blackfriday/v2"
 	"github.com/kovetskiy/mark/pkg/mark/stdlib"
 	"github.com/reconquest/pkg/log"
@@ -157,5 +160,28 @@ func ExtractDocumentLeadingH1(markdown []byte) string {
 		return ""
 	} else {
 		return string(groups[1])
+	}
+}
+
+func HtmlToMarkdown(html string, fileName string) {
+	converter := md.NewConverter("", true, nil)
+
+	markdown, err := converter.ConvertString(html)
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Println("md ->", markdown)
+	f, err := os.Create(fileName)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	defer f.Close()
+
+	_, err2 := f.WriteString(markdown)
+
+	if err2 != nil {
+		log.Fatal(err2)
 	}
 }

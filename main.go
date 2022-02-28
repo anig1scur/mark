@@ -19,6 +19,7 @@ import (
 )
 
 type Flags struct {
+	Pull             bool   `docopt:"pull"`
 	FileGlobPatten   string `docopt:"-f"`
 	CompileOnly      bool   `docopt:"--compile-only"`
 	DryRun           bool   `docopt:"--dry-run"`
@@ -46,6 +47,7 @@ const (
 Docs: https://github.com/kovetskiy/mark
 
 Usage:
+  mark pull -f <file> [options]
   mark [options] [-u <username>] [-p <token>] [-k] [-l <url>] -f <file>
   mark [options] [-u <username>] [-p <password>] [-k] [-b <url>] -f <file>
   mark -v | --version
@@ -90,7 +92,7 @@ Options:
 func main() {
 	cmd, err := docopt.ParseArgs(os.ExpandEnv(usage), nil, version)
 	if err != nil {
-		panic(err)
+		log.Fatal(err)
 	}
 
 	var flags Flags
@@ -325,7 +327,13 @@ func processFile(
 
 		target = page
 	}
-
+	if flags.Pull {
+		res, err := api.PullPage(target.ID)
+		if err != nil {
+			log.Fatalf(err, "unable to pull page")
+		}
+		mark.HtmlToMarkdown(res.Body.View.Value, target.Title+".md")
+	}
 	attaches, err := mark.ResolveAttachments(
 		api,
 		target,
