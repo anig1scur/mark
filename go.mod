@@ -25,6 +25,7 @@ require (
 	github.com/iancoleman/strcase v0.0.0-20191112232945-16388991a334 // indirect
 	github.com/kovetskiy/toml v0.2.0 // indirect
 	github.com/kr/pretty v0.1.0 // indirect
+	github.com/lunny/html2md v0.0.0-20181018071239-7d234de44546 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/reconquest/cog v0.0.0-20191208202052-266c2467b936 // indirect
 	github.com/reconquest/colorgful v0.0.0-20190805091748-28d18b838c4a // indirect

@@ -6,6 +6,8 @@ import (
 	"io/ioutil"
 	"os"
 	"path/filepath"
+	"regexp"
+	"strings"
 
 	"github.com/docopt/docopt-go"
 	"github.com/kovetskiy/lorg"
@@ -260,10 +262,7 @@ func processFile(
 		}
 	}
 
-	if flags.CompileOnly {
-		fmt.Println(mark.CompileMarkdown(markdown, stdlib))
-		os.Exit(0)
-	}
+	fmt.Println(mark.CompileMarkdown(markdown, stdlib))
 
 	if pageID != "" && meta != nil {
 		log.Warning(
@@ -332,7 +331,17 @@ func processFile(
 		if err != nil {
 			log.Fatalf(err, "unable to pull page")
 		}
-		mark.HtmlToMarkdown(res.Body.View.Value, target.Title+".md")
+		html := res.Body.View.Value
+		inlineCommentMarker := regexp.MustCompile("<span class=\"inline-comment-marker\" data-ref=\"(?P<commentId>.*)\">(?P<body>.*)</span>")
+		inlineComments := inlineCommentMarker.FindAllStringSubmatch(html, -1)
+		for _, inlineComment := range inlineComments {
+			commentId := inlineComment[1]
+			body := inlineComment[2]
+			html = strings.ReplaceAll(html, inlineComment[0], fmt.Sprintf(`<!--comment_id='%s'-->%s<!---->`, commentId, body))
+		}
+		fmt.Println(html)
+
+		mark.HtmlToMarkdown(html, target.Title+".md")
 	}
 	attaches, err := mark.ResolveAttachments(
 		api,

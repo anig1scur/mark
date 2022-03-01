@@ -37,7 +37,7 @@ func GetCredentials(
 		password = config.Password
 		if password == "" {
 			return nil, errors.New(
-				"Confluence password should be specified using -p " +
+				"confluence password should be specified using -p " +
 					"flag or be stored in configuration file",
 			)
 		}
@@ -73,7 +73,7 @@ func GetCredentials(
 
 		if baseURL == "" {
 			return nil, errors.New(
-				"Confluence base URL should be specified using -l " +
+				"confluence base URL should be specified using -l " +
 					"flag or be stored in configuration file",
 			)
 		}
@@ -81,7 +81,7 @@ func GetCredentials(
 
 	baseURL = strings.TrimRight(baseURL, `/`)
 
-	pageID := url.Query().Get("pageId")
+	pageID := "66065155"
 
 	creds := &Credentials{
 		Username: username,

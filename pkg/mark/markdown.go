@@ -1,6 +1,7 @@
 package mark
 
 import (
+	"bytes"
 	"fmt"
 	"io"
 	"os"
@@ -93,6 +94,9 @@ func CompileMarkdown(
 
 	tags := regexp.MustCompile(`<(/?ac):(\S+?)>`)
 
+	// <span class="inline-comment-marker" data-ref="d8d970d4-eecf-4169-b74d-0f08e0ce77ea">anything</span>
+	inlineCommment := regexp.MustCompile(`<!--[^>]*comment_id='(?P<comment_id>.*)'[^>]*-->(?P<body>.*)<!--[^>]*-->`)
+
 	markdown = tags.ReplaceAll(
 		markdown,
 		[]byte(`<$1`+colon.String()+`$2>`),
@@ -116,8 +120,7 @@ func CompileMarkdown(
 		markdown,
 		bf.WithRenderer(renderer),
 		bf.WithExtensions(
-			bf.NoIntraEmphasis|
-				bf.Tables|
+			bf.Tables|
 				bf.FencedCode|
 				bf.Autolink|
 				bf.LaxHTMLBlocks|
@@ -134,9 +137,17 @@ func CompileMarkdown(
 	)
 
 	html = colon.ReplaceAll(html, []byte(`:`))
+	matches := inlineCommment.FindAllSubmatch(html, -1)
+
+	for _, match := range matches {
+		commentId := string(match[1])
+		body := string(match[2])
+		html = bytes.ReplaceAll(html, match[0],
+			[]byte(fmt.Sprintf(`<span class="inline-comment-marker" data-ref="%s">%s</span>`, commentId, body)))
+	}
 
 	log.Tracef(nil, "rendered markdown to html:\n%s", string(html))
-
+	fmt.Printf("%s\n", string(html))
 	return string(html)
 }
 
@@ -165,12 +176,12 @@ func ExtractDocumentLeadingH1(markdown []byte) string {
 
 func HtmlToMarkdown(html string, fileName string) {
 	converter := md.NewConverter("", true, nil)
-
+	converter.Keep("#comment")
 	markdown, err := converter.ConvertString(html)
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Println("md ->", markdown)
+
 	f, err := os.Create(fileName)
 
 	if err != nil {
